@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Wilson.Companies.Core.Entities
 {
@@ -7,7 +8,7 @@ namespace Wilson.Companies.Core.Entities
         protected ApplicationRole()
         {
         }
-        
+
         public string Description { get; private set; }
 
         public static ApplicationRole Create(string roleName, string description)

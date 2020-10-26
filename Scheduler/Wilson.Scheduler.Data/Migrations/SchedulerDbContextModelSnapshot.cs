@@ -15,7 +15,7 @@ namespace Wilson.Scheduler.Data.Migrations
         {
             modelBuilder
                 .HasDefaultSchema("Scheduler")
-                .HasAnnotation("ProductVersion", "1.1.2")
+                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Wilson.Scheduler.Core.Entities.Employee", b =>

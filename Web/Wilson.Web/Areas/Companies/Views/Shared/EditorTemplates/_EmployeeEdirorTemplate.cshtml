@@ -40,12 +40,11 @@
     <label asp-for="EmployeePosition" class="col-md-2 control-label"></label>
     <div class="col-md-10">
         <select class="form-control" asp-for="EmployeePosition" data-val="true" data-val-required="EmployeePosition">
-            @foreach (var employeePosition in @Model.EmployeePositions)
+            @foreach (var employeePosition in @Model.EmployeePosition)
             {
-                <option value=@employeePosition.Value>@employeePosition.Text</option>
+                //<option value=@employeePosition.Value>@employeePosition.Text</option>
             }
-        </select> 
+        </select>
         <span asp-validation-for="EmployeePosition" class="text-danger"></span>
     </div>
 </div>
-

@@ -11,6 +11,7 @@ using Wilson.Web.Services;
 using AutoMapper;
 using Wilson.Web.Models.SharedViewModels;
 using Wilson.Companies.Data.DataAccess;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Wilson.Web.Controllers
 {
@@ -27,7 +28,6 @@ namespace Wilson.Web.Controllers
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
@@ -36,20 +36,19 @@ namespace Wilson.Web.Controllers
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             this.logger = loggerFactory.CreateLogger<AccountController>();
             this.mapper = mapper;
             this.companyWorkData = companyWorkData;
         }
 
-        //
         // GET: /Account/Login
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
-            // If the database is installed there will be at least one user, the admin user. If there are no users,
-            // that means the database is not installed and user is redirected to the Installation Wizard.
+            // If the database is installed there will be at least one user, the admin user. If
+            // there are no users, that means the database is not installed and user is redirected
+            // to the Installation Wizard.
             if (!userManager.Users.Any())
             {
                 return RedirectToAction(nameof(InstallController.InstallDatabase), "Install");
@@ -61,13 +60,12 @@ namespace Wilson.Web.Controllers
             }
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.Authentication.SignOutAsync(externalCookieScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
-        //
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
@@ -77,8 +75,8 @@ namespace Wilson.Web.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                // This doesn't count login failures towards account lockout To enable password
+                // failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -101,7 +99,6 @@ namespace Wilson.Web.Controllers
             return View(model);
         }
 
-        //
         // POST: /Account/Logout
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -112,7 +109,6 @@ namespace Wilson.Web.Controllers
             return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
-        //
         // GET: /Account/ForgotPassword
         [HttpGet]
         [AllowAnonymous]
@@ -121,7 +117,6 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
@@ -150,7 +145,6 @@ namespace Wilson.Web.Controllers
             return View(model);
         }
 
-        //
         // GET: /Account/ForgotPasswordConfirmation
         [HttpGet]
         [AllowAnonymous]
@@ -159,7 +153,6 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // GET: /Account/ResetPassword
         [HttpGet]
         [AllowAnonymous]
@@ -168,7 +161,6 @@ namespace Wilson.Web.Controllers
             return code == null ? View("Error") : View();
         }
 
-        //
         // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
@@ -195,16 +187,14 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // GET: /Account/ResetPasswordConfirmation
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {
             return View();
-        }                
+        }
 
-        //
         // GET /Account/AccessDenied
         [HttpGet]
         public IActionResult AccessDenied()
@@ -212,7 +202,6 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // GET /Account/RegisterRequest
         [HttpGet]
         [AllowAnonymous]
@@ -221,7 +210,6 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // POST /Account/RegisterRequest
         [HttpPost]
         [AllowAnonymous]
@@ -262,6 +250,6 @@ namespace Wilson.Web.Controllers
             }
         }
 
-        #endregion
+        #endregion Helpers
     }
 }

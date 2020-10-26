@@ -24,32 +24,28 @@ namespace Wilson.Web.Controllers
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
-          IOptions<IdentityCookieOptions> identityCookieOptions,
           IEmailSender emailSender,
           ISmsSender smsSender,
           ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
         }
 
-        //
         // GET: /Manage/Index
         [HttpGet]
         public async Task<IActionResult> Index(MessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == MessageId.ChangePasswordSuccess ?  Constants.AccountManageMessagesEn.PasswordChanged
+                message == MessageId.ChangePasswordSuccess ? Constants.AccountManageMessagesEn.PasswordChanged
                 : message == MessageId.SetPasswordSuccess ? Constants.AccountManageMessagesEn.PasswordSet
                 : message == MessageId.Error ? Constants.AccountManageMessagesEn.Error
                 : message == MessageId.AddPhoneSuccess ? Constants.AccountManageMessagesEn.PhoneWasAdded
                 : message == MessageId.RemovePhoneSuccess ? Constants.AccountManageMessagesEn.PhoneRemoved
                 : "";
-            
 
             var user = await GetCurrentUserAsync();
             if (user == null)
@@ -67,16 +63,14 @@ namespace Wilson.Web.Controllers
             };
 
             return View(model);
-        }           
+        }
 
-        //
         // GET: /Manage/AddPhoneNumber
         public IActionResult AddPhoneNumber()
         {
             return View();
         }
 
-        //
         // POST: /Manage/AddPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -98,7 +92,6 @@ namespace Wilson.Web.Controllers
             return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
         }
 
-        //
         // GET: /Manage/VerifyPhoneNumber
         [HttpGet]
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
@@ -114,7 +107,6 @@ namespace Wilson.Web.Controllers
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
 
-        //
         // POST: /Manage/VerifyPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -140,7 +132,6 @@ namespace Wilson.Web.Controllers
             return View(model);
         }
 
-        //
         // POST: /Manage/RemovePhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -160,7 +151,6 @@ namespace Wilson.Web.Controllers
             return RedirectToAction(nameof(Index), new { Message = MessageId.Error });
         }
 
-        //
         // GET: /Manage/ChangePassword
         [HttpGet]
         public IActionResult ChangePassword()
@@ -168,7 +158,6 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -195,7 +184,6 @@ namespace Wilson.Web.Controllers
             return RedirectToAction(nameof(Index), new { Message = MessageId.Error });
         }
 
-        //
         // GET: /Manage/SetPassword
         [HttpGet]
         public IActionResult SetPassword()
@@ -203,7 +191,6 @@ namespace Wilson.Web.Controllers
             return View();
         }
 
-        //
         // POST: /Manage/SetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -245,6 +232,6 @@ namespace Wilson.Web.Controllers
             return _userManager.GetUserAsync(HttpContext.User);
         }
 
-        #endregion
+        #endregion Helpers
     }
 }

@@ -15,7 +15,7 @@ namespace Wilson.Projects.Data.Migrations
         {
             modelBuilder
                 .HasDefaultSchema("Projects")
-                .HasAnnotation("ProductVersion", "1.1.1")
+                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Wilson.Projects.Core.Entities.Company", b =>
