@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using AutoMapper;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -76,8 +77,11 @@ namespace Wilson.Web
             services.AddTransient<IPayrollService, PayrollService>();
             services.AddTransient<Areas.Accounting.Services.IPayrollService, Areas.Accounting.Services.PayrollService>();
 
-            services.AddScoped<IMapper>(sp =>
-                new Mapper(new MapperConfiguration(cfg => cfg.AddProfiles(Assembly.GetEntryAssembly()))));
+            //services.AddScoped<IMapper>(sp =>
+            //    new Mapper(new MapperConfiguration(cfg => cfg.AddProfiles(Assembly.GetEntryAssembly()))));
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddScoped<IDatabaseSeeder>(sp => new DatabaseSeeder());
             services.AddScoped<IRolesSeder>(sp => new RolesSeeder());
 

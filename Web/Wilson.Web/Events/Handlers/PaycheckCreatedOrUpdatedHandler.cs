@@ -13,9 +13,12 @@ namespace Wilson.Web.Events.Handlers
 {
     public class PaycheckCreatedOrUpdatedHandler : Handler
     {
-        public PaycheckCreatedOrUpdatedHandler(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        private readonly IMapper _mapper;
+
+        public PaycheckCreatedOrUpdatedHandler(IServiceProvider serviceProvider, IMapper mapper)
+     : base(serviceProvider)
         {
+            _mapper = mapper;
         }
 
         public override async Task Handle(IDomainEvent args)
@@ -29,24 +32,20 @@ namespace Wilson.Web.Events.Handlers
             using (var serviceScope = this.ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var accDbContext = serviceScope.ServiceProvider.GetService<AccountingDbContext>();
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<Paycheck, Accounting.Core.Entities.Paycheck>().ForMember(x => x.Employee, opt => opt.Ignore());
-                });
 
                 if (eventArgs.Paychecks != null)
                 {
                     var query = await accDbContext.Set<Accounting.Core.Entities.Paycheck>().AsNoTracking().ToListAsync();
                     var mabeExistingPaycheks = query.Where(p => eventArgs.Paychecks.Any(ap => ap.Id == p.Id));
 
-                    var accountingPaycheks = accDbContext.Set<Accounting.Core.Entities.Paycheck>();                    
+                    var accountingPaycheks = accDbContext.Set<Accounting.Core.Entities.Paycheck>();
                     if (mabeExistingPaycheks.Count() != 0)
                     {
                         var updatedAccountingPaycheks =
-                            Mapper.Map<IEnumerable<Paycheck>, IEnumerable<Accounting.Core.Entities.Paycheck>>(
+                            _mapper.Map<IEnumerable<Paycheck>, IEnumerable<Accounting.Core.Entities.Paycheck>>(
                                 eventArgs.Paychecks.Where(p => mabeExistingPaycheks.Any(ap => ap.Id == p.Id)));
 
-                        var newAccountingPaychecks = Mapper.Map<IEnumerable<Paycheck>, IEnumerable<Accounting.Core.Entities.Paycheck>>(
+                        var newAccountingPaychecks = _mapper.Map<IEnumerable<Paycheck>, IEnumerable<Accounting.Core.Entities.Paycheck>>(
                             eventArgs.Paychecks.Where(p => !mabeExistingPaycheks.Any(ap => ap.Id == p.Id)));
 
                         accountingPaycheks.UpdateRange(updatedAccountingPaycheks);
@@ -54,7 +53,7 @@ namespace Wilson.Web.Events.Handlers
                     }
                     else
                     {
-                        var accPaychecks = Mapper.Map<IEnumerable<Paycheck>, IEnumerable<Accounting.Core.Entities.Paycheck>>(eventArgs.Paychecks);
+                        var accPaychecks = _mapper.Map<IEnumerable<Paycheck>, IEnumerable<Accounting.Core.Entities.Paycheck>>(eventArgs.Paychecks);
                         accountingPaycheks.AddRange(accPaychecks);
                     }
                 }
@@ -63,7 +62,7 @@ namespace Wilson.Web.Events.Handlers
                 {
                     var query = await accDbContext.Set<Accounting.Core.Entities.Paycheck>().AsNoTracking().ToListAsync();
                     var mabePaychek = query.SingleOrDefault(p => p.Id == eventArgs.Paycheck.Id);
-                    var accPaycheck = Mapper.Map<Paycheck, Accounting.Core.Entities.Paycheck>(eventArgs.Paycheck);
+                    var accPaycheck = _mapper.Map<Paycheck, Accounting.Core.Entities.Paycheck>(eventArgs.Paycheck);
                     if (mabePaychek != null)
                     {
                         accDbContext.Set<Accounting.Core.Entities.Paycheck>().Update(accPaycheck);
@@ -71,7 +70,7 @@ namespace Wilson.Web.Events.Handlers
                     else
                     {
                         await accDbContext.Set<Accounting.Core.Entities.Paycheck>().AddAsync(accPaycheck);
-                    }                    
+                    }
                 }
 
                 await accDbContext.SaveChangesAsync();

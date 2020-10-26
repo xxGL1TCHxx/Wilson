@@ -13,8 +13,8 @@ namespace Wilson.Web.Areas.Accounting.Configurations
             CreateMap<Employee, EmployeeViewModel>();
             CreateMap<Payment, PaymentViewModel>();
             CreateMap<Paycheck, PaycheckViewModel>()
-                .ForMember(x => x.Payments, opt => opt.ResolveUsing<PaychekPaymentsResolver>())
-                .ForMember(x => x.Period, opt => opt.ResolveUsing<PeriodResolver<Paycheck, PaycheckViewModel>>());
+                .ForMember(x => x.Payments, opt => opt.MapFrom<PaychekPaymentsResolver>())
+                .ForMember(x => x.Period, opt => opt.MapFrom<PeriodResolver<Paycheck, PaycheckViewModel>>());
         }
     }
 }

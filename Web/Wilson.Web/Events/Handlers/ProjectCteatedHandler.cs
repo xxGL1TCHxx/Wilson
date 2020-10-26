@@ -13,9 +13,12 @@ namespace Wilson.Web.Events.Handlers
 {
     public class ProjectCteatedHandler : Handler
     {
-        public ProjectCteatedHandler(IServiceProvider serviceProvider)
+        private readonly IMapper _mapper;
+
+        public ProjectCteatedHandler(IServiceProvider serviceProvider, IMapper mapper)
             : base(serviceProvider)
         {
+            _mapper = mapper;
         }
 
         public async override Task Handle(IDomainEvent args)
@@ -30,33 +33,11 @@ namespace Wilson.Web.Events.Handlers
             var schedulerDbContext = this.ServiceProvider.GetService<SchedulerDbContext>();
             var companyDbContext = this.ServiceProvider.GetService<CompanyDbContext>();
 
-            Mapper.Initialize(cfg =>
-            {
-                // Companies Maps
-                cfg.CreateMap<Project, Companies.Core.Entities.Project>()
-                    .ForMember(x => x.Contract, opt => opt.Ignore())
-                    .ForMember(x => x.Customer, opt => opt.Ignore())
-                    .ForSourceMember(x => x.Customer, opt => opt.Ignore())
-                    .ForSourceMember(x => x.Manager, opt => opt.Ignore());
-
-                // Accounting Maps
-                cfg.CreateMap<Project, Accounting.Core.Entities.Project>()
-                    .ForMember(x => x.Bills, opt => opt.Ignore())
-                    .ForMember(x => x.Customer, opt => opt.Ignore())
-                    .ForSourceMember(x => x.Customer, opt => opt.Ignore())
-                    .ForSourceMember(x => x.Manager, opt => opt.Ignore());
-
-                // Scheduler Maps
-                cfg.CreateMap<Project, Scheduler.Core.Entities.Project>()
-                    .ForSourceMember(x => x.Customer, opt => opt.Ignore())
-                    .ForSourceMember(x => x.Manager, opt => opt.Ignore());
-            });
-
             if (eventArgs.Projects != null)
             {
-                var companyProjects = Mapper.Map<IEnumerable<Project>, IEnumerable<Companies.Core.Entities.Project>>(eventArgs.Projects);
-                var accProjects = Mapper.Map<IEnumerable<Project>, IEnumerable<Accounting.Core.Entities.Project>>(eventArgs.Projects);
-                var schedulerProjects = Mapper.Map<IEnumerable<Project>, IEnumerable<Scheduler.Core.Entities.Project>>(eventArgs.Projects);
+                var companyProjects = _mapper.Map<IEnumerable<Project>, IEnumerable<Companies.Core.Entities.Project>>(eventArgs.Projects);
+                var accProjects = _mapper.Map<IEnumerable<Project>, IEnumerable<Accounting.Core.Entities.Project>>(eventArgs.Projects);
+                var schedulerProjects = _mapper.Map<IEnumerable<Project>, IEnumerable<Scheduler.Core.Entities.Project>>(eventArgs.Projects);
 
                 await companyDbContext.Set<Companies.Core.Entities.Project>().AddRangeAsync(companyProjects);
                 await accDbContext.Set<Accounting.Core.Entities.Project>().AddRangeAsync(accProjects);
@@ -69,9 +50,9 @@ namespace Wilson.Web.Events.Handlers
 
             if (eventArgs.Project != null)
             {
-                var companyProject = Mapper.Map<Project, Companies.Core.Entities.Project>(eventArgs.Project);
-                var accProject = Mapper.Map<Project, Accounting.Core.Entities.Project>(eventArgs.Project);
-                var schedulerProject = Mapper.Map<Project, Scheduler.Core.Entities.Project>(eventArgs.Project);
+                var companyProject = _mapper.Map<Project, Companies.Core.Entities.Project>(eventArgs.Project);
+                var accProject = _mapper.Map<Project, Accounting.Core.Entities.Project>(eventArgs.Project);
+                var schedulerProject = _mapper.Map<Project, Scheduler.Core.Entities.Project>(eventArgs.Project);
                 schedulerProject.SetShortName();
 
                 await companyDbContext.Set<Companies.Core.Entities.Project>().AddAsync(companyProject);

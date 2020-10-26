@@ -12,9 +12,12 @@ namespace Wilson.Web.Events.Handlers
 {
     public class CompanyCreatedHandler : Handler
     {
-        public CompanyCreatedHandler(IServiceProvider serviceProvider)
+        private readonly IMapper _mapper;
+
+        public CompanyCreatedHandler(IServiceProvider serviceProvider, IMapper mapper)
             : base(serviceProvider)
         {
+            _mapper = mapper;
         }
 
         public async override Task Handle(IDomainEvent args)
@@ -28,30 +31,15 @@ namespace Wilson.Web.Events.Handlers
             var companyDbContext = this.ServiceProvider.GetService<CompanyDbContext>();
             var projectDbContext = this.ServiceProvider.GetService<ProjectsDbContext>();
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<Company, Companies.Core.Entities.Company>()
-                    .ForMember(x => x.Employees, opt => opt.Ignore())
-                    .ForMember(x => x.Projects, opt => opt.Ignore())
-                    .ForSourceMember(x => x.Employees, opt => opt.Ignore())
-                    .ForSourceMember(x => x.SaleInvoices, opt => opt.Ignore())
-                    .ForSourceMember(x => x.BuyInvoices, opt => opt.Ignore());
-
-                cfg.CreateMap<Company, Projects.Core.Entities.Company>()
-                    .ForSourceMember(x => x.Employees, opt => opt.Ignore())
-                    .ForSourceMember(x => x.SaleInvoices, opt => opt.Ignore())
-                    .ForSourceMember(x => x.BuyInvoices, opt => opt.Ignore());
-            });
-
             if (eventArgs.Companies != null)
             {
-                var companyCompanies = Mapper.Map<IEnumerable<Company>, IEnumerable<Companies.Core.Entities.Company>>(eventArgs.Companies);
+                var companyCompanies = _mapper.Map<IEnumerable<Company>, IEnumerable<Companies.Core.Entities.Company>>(eventArgs.Companies);
                 foreach (var company in companyCompanies)
                 {
                     company.ChangeShippingAddress(company.GetAddress());
                 }
 
-                var projectsCompanies = Mapper.Map<IEnumerable<Company>, IEnumerable<Projects.Core.Entities.Company>>(eventArgs.Companies);
+                var projectsCompanies = _mapper.Map<IEnumerable<Company>, IEnumerable<Projects.Core.Entities.Company>>(eventArgs.Companies);
 
                 await companyDbContext.Set<Companies.Core.Entities.Company>().AddRangeAsync(companyCompanies);
                 await projectDbContext.Set<Projects.Core.Entities.Company>().AddRangeAsync(projectsCompanies);
@@ -59,15 +47,15 @@ namespace Wilson.Web.Events.Handlers
 
             if (eventArgs.Company != null)
             {
-                var companyCompany = Mapper.Map<Company, Companies.Core.Entities.Company>(eventArgs.Company);
+                var companyCompany = _mapper.Map<Company, Companies.Core.Entities.Company>(eventArgs.Company);
                 companyCompany.ChangeShippingAddress(companyCompany.GetAddress());
 
-                var projectsCompany = Mapper.Map<Company, Projects.Core.Entities.Company>(eventArgs.Company);
+                var projectsCompany = _mapper.Map<Company, Projects.Core.Entities.Company>(eventArgs.Company);
 
                 await companyDbContext.Set<Companies.Core.Entities.Company>().AddAsync(companyCompany);
                 await projectDbContext.Set<Projects.Core.Entities.Company>().AddAsync(projectsCompany);
             }
-            
+
             await companyDbContext.SaveChangesAsync();
             await projectDbContext.SaveChangesAsync();
         }
