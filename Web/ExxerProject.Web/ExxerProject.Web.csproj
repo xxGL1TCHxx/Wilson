@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
+	<PropertyGroup>
+		<UserSecretsId>aspnet-TestApp-ce345b64-19cf-4972-b34f-d16f2e7976ed</UserSecretsId>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.1.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+		<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.9" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
+		<DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
+		<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Areas\Companies\Views\Shared\DisplayTemplates\" />
+		<Folder Include="Views\Install\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Accounting\ExxerProject.Accounting.Core\ExxerProject.Accounting.Core.csproj" />
+		<ProjectReference Include="..\..\Accounting\ExxerProject.Accounting.Data\ExxerProject.Accounting.Data.csproj" />
+		<ProjectReference Include="..\..\Companies\ExxerProject.Companies.Core\ExxerProject.Companies.Core.csproj" />
+		<ProjectReference Include="..\..\Companies\ExxerProject.Companies.Data\ExxerProject.Companies.Data.csproj" />
+		<ProjectReference Include="..\..\Projects\ExxerProject.Projects.Core\ExxerProject.Projects.Core.csproj" />
+		<ProjectReference Include="..\..\Projects\ExxerProject.Projects.Data\ExxerProject.Projects.Data.csproj" />
+		<ProjectReference Include="..\..\Scheduler\ExxerProject.Scheduler.Core\ExxerProject.Scheduler.Core.csproj" />
+		<ProjectReference Include="..\..\Scheduler\ExxerProject.Scheduler.Data\ExxerProject.Scheduler.Data.csproj" />
+	</ItemGroup>
+</Project>
