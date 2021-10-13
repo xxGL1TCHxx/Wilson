@@ -8,9 +8,9 @@ namespace ExxerProject.Web.Configurations
     {
         public AutoMapperProfileConfiguration()
         {
-            //CreateMap<Employee, Scheduler.Core.Entities.Employee>();
-            //CreateMap<PayRateViewModel, Scheduler.Core.Entities.PayRate>();
-            //CreateMap<Project, Scheduler.Core.Entities.Project>();
+            CreateMap<Employee, Scheduler.Core.Entities.Employee>();
+            CreateMap<PayRateViewModel, Scheduler.Core.Entities.PayRate>();
+            CreateMap<Project, Scheduler.Core.Entities.Project>();
         }
     }
 }

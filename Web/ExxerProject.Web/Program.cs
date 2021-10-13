@@ -16,8 +16,9 @@ namespace ExxerProject.Web
                .ConfigureWebHostDefaults(webBuilder =>
                {
                    webBuilder
-                   .UseStartup<Startup>()
-                    .UseKestrel()
+
+                    .UseIISIntegration()
+                   //.UseStartup<Startup>()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()

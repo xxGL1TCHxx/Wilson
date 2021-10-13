@@ -54,13 +54,13 @@ namespace ExxerProject.Web
             // Add framework services.
             services
                 .AddDbContext<CompanyDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")))
                 .AddDbContext<AccountingDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")))
                 .AddDbContext<ProjectsDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")))
                 .AddDbContext<SchedulerDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<CompanyDbContext>()
@@ -71,14 +71,23 @@ namespace ExxerProject.Web
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.AddTransient<AutoMapper.IConfigurationProvider, MapperConfiguration>();
+            //services.AddTransient<AutoMapper.IConfigurationProvider, MapperConfiguration>();
 
             services.AddTransient<IScheduleSevice, ScheduleSevice>();
             services.AddTransient<IPayrollService, PayrollService>();
             services.AddTransient<Areas.Accounting.Services.IPayrollService, Areas.Accounting.Services.PayrollService>();
 
+
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new Configurations.AutoMapperProfileConfiguration());
+            });
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
+
+
             //services.AddScoped<IMapper>(sp =>
-            //    new Mapper(new MapperConfiguration(cfg => cfg.AddProfiles(Assembly.GetEntryAssembly()))));
+            //    new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(Assembly.GetEntryAssembly()))));
 
             services.AddApplicationInsightsTelemetry();
 
