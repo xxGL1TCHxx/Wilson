@@ -30,7 +30,7 @@ namespace ExxerProject.Companies.Data
 
         private void RegesterEntityTypeConfigurations(ModelBuilder builder)
         {
-            var typesToRegister = Assembly.Load(new AssemblyName("ExxerProject.Company.Data")).GetTypes().Where(
+            var typesToRegister = Assembly.Load(new AssemblyName("ExxerProject.Companies.Data")).GetTypes().Where(
                 type => type.GetTypeInfo().BaseType != null &&
                 !type.GetTypeInfo().IsAbstract &&
                 typeof(IEntityTypeConfiguration).IsAssignableFrom(type));

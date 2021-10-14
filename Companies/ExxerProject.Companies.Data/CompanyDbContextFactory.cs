@@ -9,7 +9,7 @@ namespace ExxerProject.Companies.Data
         public CompanyDbContext Create()
         {
             var builder = new DbContextOptionsBuilder<CompanyDbContext>();
-            builder.UseSqlServer("Server=.;Database=ExxerProject;Trusted_Connection=True;MultipleActiveResultSets=true");
+            builder.UseSqlite("Data Source=MyData.sdf;");
 
             return new CompanyDbContext(builder.Options);
         }
@@ -17,7 +17,7 @@ namespace ExxerProject.Companies.Data
         public CompanyDbContext CreateDbContext(string[] args)
         {
             var builder = new DbContextOptionsBuilder<CompanyDbContext>();
-            builder.UseSqlServer("Server=.;Database=ExxerProject;Trusted_Connection=True;MultipleActiveResultSets=true");
+            builder.UseSqlite("Data Source=MyData.sdf;");
 
             return new CompanyDbContext(builder.Options);
         }
